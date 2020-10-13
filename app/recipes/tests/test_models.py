@@ -15,3 +15,14 @@ class TestUser(TestCase):
 
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
+    
+    def test_create_user_email_is_normalized(self):
+        """ To normalize email means that all letters in domain are lowwercased """
+        email = 'TestEmail@SomeDomain.com'
+
+        user = get_user_model().objects.create_user(
+            email=email,
+            password='AnyRandomPassword'
+        )
+
+        self.assertEqual(user.email, 'TestEmail@somedomain.com')
