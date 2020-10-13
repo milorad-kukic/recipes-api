@@ -26,3 +26,9 @@ class TestUser(TestCase):
         )
 
         self.assertEqual(user.email, 'TestEmail@somedomain.com')
+
+    def test_create_user_with_no_email_raises_error(self):
+        expected_msg = 'User must have an email address'
+        with self.assertRaisesMessage(ValueError, expected_msg):
+            get_user_model().objects.create_user(None, 'password123')
+
