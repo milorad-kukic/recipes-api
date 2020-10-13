@@ -7,6 +7,7 @@ from rest_framework import status
 
 
 CREATE_USER_URL = reverse('user:create')
+TOKEN_URL = reverse('user:token')
 
 
 def create_user(**params):
@@ -46,7 +47,7 @@ class PublicUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_password_must_be_more_than_5_characters(self):
+    def test_create_user_password_must_be_more_than_5_characters(self):
         payload = {
             'email': 'user@site.com', 
             'password': 'pw'
@@ -59,3 +60,35 @@ class PublicUserApiTests(TestCase):
                 email=payload['email']
         ).exists()
         self.assertFalse(user_exists)
+
+    def test_login_with_valid_credentials_should_return_token(self):
+        payload = {'email': 'user@site.com', 'password': 'secretpass'}
+        create_user(**payload)
+
+        res = self.client.post(TOKEN_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn('token', res.data)
+
+    def test_login_invalid_password_doesnt_create_token(self):
+        create_user(email='user@recipes.com', password='testpass')
+        payload = { 'email': 'user@recipes.com', 'password': 'wrong'}
+
+        res = self.client.post(TOKEN_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('token', res.data)
+
+    def test_login_user_not_exist_token_not_created(self):
+        payload = { 'email': 'user@recipes.com', 'password': 'testpass'}
+
+        res = self.client.post(TOKEN_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('token', res.data)
+
+    def test_login_empty_password_returns_error(self):
+        res = self.client.post(TOKEN_URL, {'email': 'test@mail.com', 'password': ''})
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('token', res.data)
