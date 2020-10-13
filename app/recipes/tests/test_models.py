@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 class TestUser(TestCase):
 
-    def test_can_create_user_with_email_as_username(self):
+    def test_create_user_with_email_as_username_successfull(self):
         email = 'test@email.com'
         password = 'TestPass123'
 
@@ -32,3 +32,11 @@ class TestUser(TestCase):
         with self.assertRaisesMessage(ValueError, expected_msg):
             get_user_model().objects.create_user(None, 'password123')
 
+    def test_create_superuser_sets_staff_and_super_user_flags(self):
+        user = get_user_model().objects.create_superuser(
+            email='user@mail.com',
+            password='anypassword'
+        )
+        
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_staff)
