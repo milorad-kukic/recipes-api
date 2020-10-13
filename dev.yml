@@ -9,6 +9,8 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=app.settings.dev
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
 
