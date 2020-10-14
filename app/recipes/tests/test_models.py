@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+from recipes.models import Recipe
+
 
 class TestUser(TestCase):
 
@@ -40,3 +42,14 @@ class TestUser(TestCase):
         
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+class TestRecipe(TestCase):
+
+    def test_recipe_is_represented_by_name(self):
+        recipe = Recipe.objects.create(
+            name='Burger', 
+            image_path='some path', 
+            description='Tasty burger'
+        )
+
+        self.assertEqual(str(recipe), recipe.name)

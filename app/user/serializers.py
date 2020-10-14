@@ -34,8 +34,6 @@ class AuthTokenSerializer(serializers.Serializer):
         )
 
         if not user:
-            import pdb
-            pdb.set_trace()
             msg = _('Unable to authenticate with provided credentials')
             raise serializers.ValidationError(msg, code='authentication')
 

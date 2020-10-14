@@ -51,3 +51,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class Recipe(models.Model):
+    name = models.CharField(max_length=150)
+    image_path = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
