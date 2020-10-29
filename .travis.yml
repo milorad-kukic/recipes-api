@@ -8,4 +8,4 @@ services:
 before_script: pip install docker-compose
 
 script: 
-    - docker-compose run python sh -c "coverage run manage.py test && flake8"
+    - docker-compose -f dev.yml run python sh -c "coverage run manage.py test && flake8"
