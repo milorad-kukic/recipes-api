@@ -1,12 +1,15 @@
 language: python
 python:
-    - "3.6"
+    - "3.7"
 
-services:
-    - docker
+env:
+    -DJANGO_SETTINGS_MODULE='app.settings.dev'
 
-before_script: pip install docker-compose
+install:
+    - pip install -r app/requirements/dev.txt 
 
-script: 
-    - docker-compose -f dev.yml run python sh -c "coverage run manage.py test && flake8 && coverage report"
+script:
+    coverage run app/manage.py test && coverage report
 
+after_success:
+    coveralls
